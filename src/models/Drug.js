@@ -7,7 +7,7 @@ const Drug = sequelize.define("Drug", {
   category:    { type: DataTypes.STRING(100) },
   unit:        { type: DataTypes.STRING(50) },   // e.g., 'tablet', 'ml'
   reorderLevel: { type: DataTypes.INTEGER, defaultValue: 50 },
-  totalStock:  { type: DataTypes.INTEGER, defaultValue: 0 },
+  Stock:  { type: DataTypes.INTEGER, defaultValue: 0 },
   description: { type: DataTypes.TEXT }
 });
 module.exports = Drug;
