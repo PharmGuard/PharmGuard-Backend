@@ -26,7 +26,8 @@ exports.addBatch = async (req, res) => {
       batchNumber,
       quantity,
       expiryDate,
-      supplier
+      supplier,
+      receivedDate: new Date()
     }, { transaction: t });
 
     // 3. Update the Drug's total stock
