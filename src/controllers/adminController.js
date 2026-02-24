@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const sendEmail = require('../utils/sendEmail');
 
 // 1. ADD EMPLOYEE (Admin Only)
 exports.addEmployee = async (req, res) => {
@@ -35,17 +36,61 @@ exports.addEmployee = async (req, res) => {
       isVerified: true, // Skip OTP! Admin trusts them.
       otp: otp
     });
-//Simulate sending an email to the employee
-    console.log(`\n============================`);
-    console.log(`EMAIL SENT TO: ${email}`);
-    console.log(`Hello ${username}, you have been invited to join PharmGuard as a ${role}.`);
-    console.log(`Your setup OTP is: ${otp}`);
-    console.log(`============================\n`);
 
-    res.status(201).json({
-      success: true,
-      message: `Employee invited successfully! An OTP has been sent to their email.`,
-      user: { id: newUser.id, name: newUser.username, email: newUser.email }
+   // 2. ACTUAL LIVE EMAIL SENDING
+    try {
+      const emailMessage = `Hello ${username},\n\nYou have been invited to join PharmGuard as a ${role} for ${req.user.pharmacyName}.\n\nYour setup OTP is: ${otp}\n\nPlease use this to complete your account setup.`;
+      
+      await sendEmail({
+        email: newUser.email,
+        subject: 'Welcome to PharmGuard - Your Setup OTP',
+        message: emailMessage
+      });
+
+      res.status(201).json({
+        success: true,
+        message: `Employee invited successfully! An OTP has been sent to their email.`,
+        user: { id: newUser.id, name: newUser.username, email: newUser.email }
+      });
+
+    } catch (emailError) {
+      console.error("Email failed to send:", emailError);
+      
+      // If the email fails, we still want the Admin to know the OTP!
+      res.status(201).json({
+        success: true,
+        message: `Employee created, but the email failed to send. Please share this OTP manually: ${otp}`,
+        user: { id: newUser.id, name: newUser.username, email: newUser.email }
+      });
+    }
+
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
+
+// 2. DELETE EMPLOYEE (Admin Only)
+exports.deleteEmployee = async (req, res) => {
+  try {
+    const userId = req.params.id; // We will pass the ID in the URL
+
+    // 1. Find the user
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // 2. Prevent the Admin from accidentally deleting themselves
+    if (user.id === req.user.id) {
+      return res.status(400).json({ success: false, message: 'You cannot delete your own admin account.' });
+    }
+
+    // 3. Delete from database
+    await user.destroy();
+
+    res.status(200).json({ 
+      success: true, 
+      message: `Employee ${user.username} has been deleted successfully.` 
     });
 
   } catch (error) {

@@ -77,6 +77,7 @@
     "mysql2": "^3.17.0",
     "named-placeholders": "^1.1.6",
     "negotiator": "^1.0.0",
+    "nodemailer": "^8.0.1",
     "normalize-path": "^3.0.0",
     "object-assign": "^4.1.1",
     "object-inspect": "^1.13.4",
