@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
     // 1. Get the token from the header
     const tokenHeader = req.header('Authorization');
 
@@ -32,4 +32,26 @@ module.exports = (req, res, next) => {
             message: 'Invalid Token' 
         });
     }
+};
+// 2. ROLE-BASED ACCESS CONTROL (The missing function!)
+const authorizeRoles = (...allowedRoles) => {
+    return (req, res, next) => {
+        if (!req.user) {
+            return res.status(401).json({ success: false, message: 'Authentication required.' });
+        }
+
+        if (!allowedRoles.includes(req.user.role)) {
+            return res.status(403).json({ 
+                success: false, 
+                message: `Access denied. Role (${req.user.role}) not authorized.` 
+            });
+        }
+        next();
+    };
+};
+
+// 3. EXPORT BOTH AS AN OBJECT
+module.exports = {
+    authMiddleware,
+    authorizeRoles
 };

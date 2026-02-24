@@ -1,5 +1,5 @@
 const Drug = require('../models/Drug'); // Adjust the path/case to match your Drug model
-const Batch = require('../models/batch'); // Adjust the path/case to match your Batch model
+const Batch = require('../models/DrugBatch'); // Adjust the path/case to match your Batch model
 const sequelize = require('../config/database'); // We need this to run the transaction!
 
 // ==========================================

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 const auditController = require('../controllers/auditController');
-const authMiddleware = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware'); // Checks Role
 
 // GLOBAL GATEKEEPER: All routes below require login + ADMIN role
@@ -17,6 +17,6 @@ router.post('/add-employee', adminController.addEmployee);
 router.get('/audit-logs', auditController.getAuditLogs);
 
 // DELETE /api/admin/delete-employee/:id
-router.delete('/delete-employee/:id', authMiddleware, adminController.deleteEmployee);
+router.delete('/delete-employee/:id', adminController.deleteEmployee);
 
 module.exports = router;
