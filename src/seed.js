@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const User = require('./models/User'); // Double check this path matches your folder structure
+const User = require('./models/user'); 
 const sequelize = require('./config/database');
 
 const seedAdmin = async () => {
