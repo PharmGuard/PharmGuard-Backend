@@ -11,6 +11,7 @@ const drugRoutes = require('./routes/drugRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const batchRoutes = require('./routes/batchRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 require('./models'); // Load all models
 
@@ -28,6 +29,7 @@ app.use('/api/drugs', drugRoutes);  // Inventory Management
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/batches', batchRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.get('/', (req, res) => res.json({ message: 'PharmGuard API is running' }));
 
