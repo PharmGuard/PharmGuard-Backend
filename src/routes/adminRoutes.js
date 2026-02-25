@@ -19,4 +19,8 @@ router.get('/audit-logs', auditController.getAuditLogs);
 // DELETE /api/admin/delete-employee/:id
 router.delete('/delete-employee/:id', adminController.deleteEmployee);
 
+// List All Employees
+// URL: GET /api/admin/employees
+router.get('/employees', adminController.getAllEmployees);
+
 module.exports = router;

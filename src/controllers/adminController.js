@@ -17,14 +17,13 @@ exports.addEmployee = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
-// 1. Generate a 4-digit OTP for the employee
+    
+    // 1. Generate a 4-digit OTP for the employee
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
 
     // 2. Generate a random "dummy" password just to keep the database happy 
-    // (The database requires a password, but no one will ever know this one)
     const randomTempPassword = Math.random().toString(36).slice(-10);
     const hashedPassword = await bcrypt.hash(randomTempPassword, 10);
-
 
     // Create the Employee (Automatically Verified because Admin created them)
     const newUser = await User.create({
@@ -95,5 +94,27 @@ exports.deleteEmployee = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
+
+// 3. GET ALL EMPLOYEES (Admin Only)
+exports.getAllEmployees = async (req, res) => {
+  try {
+    // Fetch users that belong ONLY to this Admin's pharmacy, and exclude sensitive data
+    const employees = await User.findAll({
+      where: { pharmacyName: req.user.pharmacyName }, 
+      attributes: { exclude: ['password', 'otp'] }, // Security first!
+      order: [['createdAt', 'DESC']]
+    });
+
+    res.status(200).json({
+      success: true,
+      count: employees.length,
+      data: employees
+    });
+
+  } catch (error) {
+    console.error("Fetch Employees Error:", error.message);
+    res.status(500).json({ success: false, message: 'Server Error fetching employees', error: error.message });
   }
 };
