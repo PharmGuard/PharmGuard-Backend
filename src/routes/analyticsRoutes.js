@@ -12,13 +12,8 @@ router.use(authMiddleware);
 // URL: GET /api/analytics/drug/:id
 router.get('/drug/:id', analyticsController.getDrugForecast);
 
-// 2. AI Dashboard (Placeholder for the Admin-only dashboard)
+// 2. AI Dashboard (Admin-only overview)
 // URL: GET /api/analytics/dashboard
-router.get('/dashboard', authorizeRoles('admin'), (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: "Admin AI Dashboard data will go here."
-    });
-});
+router.get('/dashboard', authorizeRoles('admin'), analyticsController.getDashboardMetrics);
 
 module.exports = router;
