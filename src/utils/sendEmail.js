@@ -1,13 +1,20 @@
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
-  // 1. Log into your Gmail account
   const transporter = nodemailer.createTransport({
+    //FORCE IPv4 by using the explicit host and service
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // Use SSL
     auth: {
-      user: process.env.EMAIL_USER, 
-      pass: process.env.EMAIL_PASS, 
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
+    //ADD THIS: This tells Node to prioritize IPv4 over IPv6
+    tls: {
+      rejectUnauthorized: false
+    }
   });
 
   // 2. Format the email message
