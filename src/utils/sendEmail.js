@@ -4,7 +4,7 @@ const sendEmail = async (options) => {
     const transporter = nodemailer.createTransport({
         //FORCE IPv4 by using the explicit host and service
         //service: 'gmail',
-        host: 'smtp.gmail.com',
+        host: 'smtp.zeptomail.com',
         port: 465,
         secure: true,
         family: 4,
@@ -21,7 +21,7 @@ const sendEmail = async (options) => {
 
     // 2. Format the email message
     const mailOptions = {
-        from: `PharmGuard System <${process.env.EMAIL_USER}>`,
+        from: `PharmGuard System <${process.env.EMAIL_FROM_USER}>`,
         to: options.email,
         subject: options.subject,
         text: options.message,
