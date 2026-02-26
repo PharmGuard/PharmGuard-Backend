@@ -5,8 +5,8 @@ const sendEmail = async (options) => {
         //FORCE IPv4 by using the explicit host and service
         //service: 'gmail',
         host: 'smtp.zeptomail.com',
-        port: 465,
-        secure: true,
+        port: 587,
+        secure: false,
         family: 4,
          // Use SSL
         auth: {
