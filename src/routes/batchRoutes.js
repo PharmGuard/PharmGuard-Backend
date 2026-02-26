@@ -12,4 +12,13 @@ router.post(
   batchController.addBatch
 );
 
+// Update Existing Batch (The missing API!)
+// URL: PUT /api/batches/:id
+router.put(
+  '/:id', 
+  authMiddleware, 
+  authorizeRoles('admin', 'storekeeper'), 
+  batchController.updateBatch
+);
+
 module.exports = router;
