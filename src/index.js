@@ -41,7 +41,7 @@ sequelize.authenticate()
   .then(() => {
     console.log('Database connected!');
     // syncing models (alter: true updates tables if you change models)
-    return sequelize.sync({ alter: true }); 
+    return sequelize.sync({ force: true }); 
   })
   .then(() => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
