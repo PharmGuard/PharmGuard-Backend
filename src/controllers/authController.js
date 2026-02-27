@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const sendEmail = require('../utils/sendEmail');
 //1. SETUP PASSWORD (For new employees)
 
 exports.setupPassword = async (req, res) => {
@@ -145,5 +145,48 @@ exports.resetPassword = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
+
+// POST /api/auth/resend-otp
+exports.resendOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // 1. Verify the user actually exists
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found in the system.' });
+    }
+
+    // 2. Check if they even need an OTP
+    if (!user.otp && user.isVerified) {
+      return res.status(400).json({ success: false, message: 'Account is already fully set up. Please log in.' });
+    }
+
+    // 3. Generate a fresh 4-digit OTP
+    const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    // 4. Update the database with the new OTP
+    user.otp = newOtp;
+    await user.save();
+
+    // 5. Fire off the ZeptoMail API request
+    const emailMessage = `Hello ${user.username},\n\nYou requested a new setup OTP for PharmGuard.\n\nYour new OTP is: ${newOtp}\n\nPlease use this to complete your account setup.`;
+
+    await sendEmail({
+      email: user.email,
+      subject: 'PharmGuard - Your New Setup OTP',
+      message: emailMessage
+    });
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'A fresh OTP has been successfully sent to the email address.' 
+    });
+
+  } catch (error) {
+    console.error("Resend OTP Error:", error.message);
+    res.status(500).json({ success: false, message: 'Server error while resending OTP.', error: error.message });
   }
 };

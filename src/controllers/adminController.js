@@ -26,13 +26,14 @@ exports.addEmployee = async (req, res) => {
     const hashedPassword = await bcrypt.hash(randomTempPassword, 10);
 
     // Create the Employee (Automatically Verified because Admin created them)
+    // Create the Employee (Pending Setup)
     const newUser = await User.create({
       username,
       email,
       password: hashedPassword,
       role: role, 
-      pharmacyName: req.user.pharmacyName, // Assign to Admin's pharmacy
-      isVerified: true, // Skip OTP! Admin trusts them.
+      pharmacyName: req.user.pharmacyName, 
+      isVerified: false, // Force them to use the OTP to verify!
       otp: otp
     });
 
@@ -58,7 +59,7 @@ exports.addEmployee = async (req, res) => {
       // If the email fails, we still want the Admin to know the OTP!
       res.status(201).json({
         success: true,
-        message: `Employee created, but the email failed to send. Please share this OTP manually: ${otp}`,
+        message: `Employee created, but the email failed to send. Please tell the admin`,
         user: { id: newUser.id, name: newUser.username, email: newUser.email }
       });
     }
