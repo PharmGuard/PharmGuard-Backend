@@ -46,7 +46,12 @@ exports.dispenseDrug = async (req, res) => {
       action: 'DISPENSE',
       entity: 'Drug',
       entityId: drugId,
-      details: JSON.stringify({ quantity, remainingStock }),
+      details: JSON.stringify({ medicationName: drug.name,       // Now the frontend will see the drug name!
+        quantity: quantity, 
+        remainingStock: remainingStock,
+        notes: notes || 'None'           // Now the frontend will see the notes!
+        
+      }),
       ipAddress: req.ip
     }, { transaction: t });
 
