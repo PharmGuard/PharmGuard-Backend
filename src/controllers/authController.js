@@ -109,7 +109,7 @@ exports.forgotPassword = async (req, res) => {
       
       await sendEmail({
         email: user.email,
-        subject: 'PharmGuard - Password Reset OTP',
+        subject: 'Pharminel - Password Reset OTP',
         message: emailMessage
       });
       
@@ -172,11 +172,11 @@ exports.resendOTP = async (req, res) => {
     await user.save();
 
     // 5. Fire off the ZeptoMail API request
-    const emailMessage = `Hello ${user.username},\n\nYou requested a new setup OTP for PharmGuard.\n\nYour new OTP is: ${newOtp}\n\nPlease use this to complete your account setup.`;
+    const emailMessage = `Hello ${user.username},\n\nYou requested a new setup OTP for Pharminel.\n\nYour new OTP is: ${newOtp}\n\nPlease use this to complete your account setup.`;
 
     await sendEmail({
       email: user.email,
-      subject: 'PharmGuard - Your New Setup OTP',
+      subject: 'Pharminel - Your New Setup OTP',
       message: emailMessage
     });
 

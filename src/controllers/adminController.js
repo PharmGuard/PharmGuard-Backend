@@ -43,7 +43,7 @@ exports.addEmployee = async (req, res) => {
       
       await sendEmail({
         email: newUser.email,
-        subject: 'Welcome to PharmGuard - Your Setup OTP',
+        subject: 'Welcome to Pharminel - Your Setup OTP',
         message: emailMessage
       });
 
